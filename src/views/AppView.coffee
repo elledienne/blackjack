@@ -1,8 +1,10 @@
 class window.AppView extends Backbone.View
   template: _.template '
-    <button class="hit-button">Hit</button> 
-    <button class="stand-button">Stand</button>
+    <button class="hit-button" disabled>Hit</button> 
+    <button class="stand-button" disabled>Stand</button>
     <button class="next-button">Next play</button>
+    <input class="bet-input" type="text"/>
+    <button class="bet-button">Place bet</button>
     <div class="player-hand-container"></div>
     <div class="dealer-hand-container"></div>
   '
@@ -10,11 +12,16 @@ class window.AppView extends Backbone.View
   events:
     'click .hit-button': -> @model.get('playerHand').hit()
     'click .stand-button': -> @model.get('playerHand').stand()
-    'click .next-button': -> @model.reset()
+    'click .next-button': -> 
+      #@toggleButtons()
+      @callReset()
+    'click .bet-button': -> 
+      @placeBet()
 
   initialize: ->
     @render()
     @listenTo(@model, 'change:winner', @winner)
+    @listenTo(@model, 'change:isPlaying', @toggleButtons)
 
   render: ->
     @$el.children().detach()
@@ -23,7 +30,32 @@ class window.AppView extends Backbone.View
     @$('.dealer-hand-container').html new HandView(collection: @model.get 'dealerHand').el
 
   winner: ->
-    console.log(@model.get('winner'))
-    #debugger
-    # @$el.remove()
-    # new AppView(model: new App()).$el.appendTo 'body'
+    console.log('winner method')
+    @model.set('isPlaying', false)
+    if confirm(@model.get('winner') + ' wins')
+      @stopListening(@model, 'change:winner')
+      @model.set('winner', null)
+      @listenTo(@model, 'change:winner', @winner) 
+      #@$el.find('.bet-button').prop('disabled', false)
+      @callReset()
+
+  callReset: ->
+    @$el.find('.bet-button').prop('disabled', false)
+    @model.reset()
+
+
+  toggleButtons: ->
+    $buttons = @$el.find('.hit-button, .stand-button')
+    if $buttons.prop('disabled') 
+      $buttons.prop('disabled', false)
+    else 
+      $buttons.prop('disabled', true)
+
+  placeBet: ->
+    @$el.find('.bet-button').prop('disabled', true)
+    @model.set('isPlaying', true)
+    @model.set('currentBet', @$el.find('.bet-input').val())
+    @model.get('playerHand').each((card) ->
+      card.flip()
+    )
+    @model.get('dealerHand').at(1).flip()

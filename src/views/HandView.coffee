@@ -8,14 +8,14 @@ class window.HandView extends Backbone.View
     @render()
 
   render: ->
-    console.log('aaaa');
+    #console.log('aaaa');
     @$el.children().detach()
     @$el.html @template @collection
     @$el.append @collection.map (card) ->
       new CardView(model: card).$el
     
-    console.log(@collection.scores())
-    if @collection.hasAce() and !@collection.isDealer
+    #console.log(@collection.scores())
+    if @collection.hasAce()
       score1 = @collection.scores()[0]
       score2 = @collection.scores()[1]
 

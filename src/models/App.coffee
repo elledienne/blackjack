@@ -10,23 +10,29 @@ class window.App extends Backbone.Model
     @get('playerHand').on('stand', => @dealerPlay())
 
   dealerPlay: (playerBusted) ->
-    if !playerBusted
+    if playerBusted
+      @set('winner', 'dealer')   
+    else
+      @get('dealerHand').at(0).flip()
       dealerScore = _.min(@get('dealerHand').scores())
       playerScore = _.min(@get('playerHand').scores())
       while dealerScore < 17
         @get('dealerHand').hit()
         dealerScore = _.min(@get('dealerHand').scores())
-        if dealerScore > 21
-          break
-    @set('winner', 'dealer')   
+      if dealerScore > 21
+        @set('winner', 'player')
+      else if playerScore > dealerScore
+        @set('winner', 'player')
+      else if dealerScore > playerScore
+        @set('winner', 'dealer') 
+      else if dealerScore == playerScore
+        @set('winner', 'push')
+    #@trigger 'winner', @
 
-    
-    @trigger 'winner', @
 
+################### if player > 21, dealer wins
 
-# if player > 21, dealer wins
-
-# if dealer > 21, player wins
+################### if dealer > 21, player wins
 
 # if player < 21 && player > dealer, player wins
 

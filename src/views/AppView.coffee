@@ -11,7 +11,7 @@ class window.AppView extends Backbone.View
 
   initialize: ->
     @render()
-    @listenTo(@model, 'winner', @winner)
+    @listenTo(@model, 'change:winner', @winner)
 
   render: ->
     @$el.children().detach()
@@ -21,3 +21,6 @@ class window.AppView extends Backbone.View
 
   winner: ->
     console.log(@model.get('winner'))
+    #debugger
+    #@$el.remove()
+    #new AppView(model: new App()).$el.appendTo 'body'

@@ -29,13 +29,8 @@ class window.App extends Backbone.Model
         @set('winner', 'push')
     #@trigger 'winner', @
 
-
-################### if player > 21, dealer wins
-
-################### if dealer > 21, player wins
-
-# if player < 21 && player > dealer, player wins
-
-# if dealer < 21 && dealer > player, dealer wins
-      
-#
+  reset: ->
+    @get('playerHand').reset();
+    @get('dealerHand').reset();
+    @set('playerHand', @get('deck').dealPlayer())
+    @set('dealerHand', @get('deck').dealDealer())

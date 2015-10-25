@@ -2,7 +2,6 @@ class window.AppView extends Backbone.View
   template: _.template '
     <button class="hit-button" disabled>Hit</button> 
     <button class="stand-button" disabled>Stand</button>
-    <button class="next-button">Next play</button>
     <input class="bet-input" type="text"/>
     <button class="bet-button">Place bet</button>
     <div class="player-hand-container"></div>
@@ -12,9 +11,9 @@ class window.AppView extends Backbone.View
   events:
     'click .hit-button': -> @model.get('playerHand').hit()
     'click .stand-button': -> @model.get('playerHand').stand()
-    'click .next-button': -> 
+    #'click .next-button': -> 
       #@toggleButtons()
-      @callReset()
+    #  @callReset()
     'click .bet-button': -> 
       @placeBet()
 
@@ -33,9 +32,9 @@ class window.AppView extends Backbone.View
     console.log('winner method')
     @model.set('isPlaying', false)
     if confirm(@model.get('winner') + ' wins')
-      @stopListening(@model, 'change:winner')
-      @model.set('winner', null)
-      @listenTo(@model, 'change:winner', @winner) 
+      #@stopListening(@model, 'change:winner')
+      @model.unset('winner', {silent: true})
+      #@listenTo(@model, 'change:winner', @winner) 
       #@$el.find('.bet-button').prop('disabled', false)
       @callReset()
 
